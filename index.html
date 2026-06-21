@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文公尺 × 公分 對照工具</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @import url("https://cdn.jsdelivr.net/gh/max32002/taipei-sans-tc@latest/css/Taipei-Sans-TC.css");
+  :root{
+    --paper:#f4efe4; --paper2:#ece4d4; --ink:#2b2620; --ink-soft:#6b6052;
+    --red:#c0392b; --red-soft:#e8c9c3; --black-cat:#3a342c; --black-soft:#d8d2c6;
+    --gold:#e6b422; --line:#ccc1ad;
+    --shadow:0 2px 10px rgba(60,50,30,.10);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper);
+    background-image:radial-gradient(rgba(160,140,110,.06) 1px,transparent 1px);
+    background-size:4px 4px;
+    color:var(--ink);
+    font-family:"PingFang TC","Heiti TC","Microsoft JhengHei",system-ui,sans-serif;
+    line-height:1.6; padding:24px 14px 60px;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+  header h1{font-size:26px;margin:0 0 4px;letter-spacing:1px;}
+  header p{margin:0 0 22px;color:var(--ink-soft);font-size:14px;}
+  .card{background:var(--paper2);border:1px solid var(--line);border-radius:14px;
+    padding:20px;box-shadow:var(--shadow);margin-bottom:20px;}
+  .input-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .input-row label{font-size:15px;font-weight:600;}
+  #cm{font-size:30px;width:160px;padding:8px 12px;border:2px solid var(--ink);
+    border-radius:10px;background:#fff;color:var(--ink);font-weight:700;text-align:center;}
+  .unit{font-size:18px;color:var(--ink-soft);}
+  .quick{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;}
+  .quick button{font-size:12px;padding:5px 10px;border:1px solid var(--line);
+    background:#fff;border-radius:20px;cursor:pointer;color:var(--ink-soft);transition:.15s;}
+  .quick button:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+  /* verdict */
+  .verdict{margin-top:18px;border-radius:12px;padding:18px 20px;display:flex;
+    align-items:center;gap:18px;border:2px solid;}
+  .verdict.good{background:#fbeae6;border-color:var(--red);}
+  .verdict.bad{background:#ece8e1;border-color:var(--black-cat);}
+  .big-char{font-size:56px;font-weight:800;line-height:1;width:84px;text-align:center;
+    border-radius:10px;padding:10px 0;flex:none;}
+  .good .big-char{color:#fff;background:var(--red);}
+  .bad .big-char{color:#fff;background:var(--black-cat);}
+  .vtext{flex:1;min-width:180px;}
+  .vtag{display:inline-block;font-size:13px;font-weight:700;padding:2px 10px;border-radius:20px;}
+  .good .vtag{background:var(--red);color:#fff;}
+  .bad .vtag{background:var(--black-cat);color:#fff;}
+  .vsub{font-size:22px;font-weight:700;margin:6px 0 2px;}
+  .vmean{font-size:14px;color:var(--ink-soft);}
+
+  /* suggestion */
+  .sugg{margin-top:16px;font-size:14px;}
+  .sugg h3{font-size:14px;margin:0 0 8px;color:var(--ink-soft);font-weight:700;
+    letter-spacing:.5px;border-bottom:1px dashed var(--line);padding-bottom:6px;}
+  .sugg .pill{display:inline-flex;align-items:baseline;gap:6px;background:#fff;
+    border:1px solid var(--red-soft);border-left:4px solid var(--red);border-radius:8px;
+    padding:8px 12px;margin:0 8px 8px 0;}
+  .pill .rng{font-size:17px;font-weight:800;color:var(--red);font-variant-numeric:tabular-nums;}
+  .pill .nm{font-size:13px;color:var(--ink-soft);}
+
+  /* cycle strip */
+  h2.sec{font-size:16px;margin:0 0 12px;letter-spacing:1px;}
+  .legend{font-size:12px;color:var(--ink-soft);margin-bottom:10px;}
+  .legend b.r{color:var(--red);} .legend b.k{color:var(--black-cat);}
+  .strip{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;}
+  .seg{border-radius:7px;padding:8px 4px;text-align:center;color:#fff;}
+  .seg.r{background:var(--red);} .seg.k{background:var(--black-cat);}
+  .seg .c{font-size:20px;font-weight:800;}
+  .seg .n{font-size:10px;opacity:.85;font-variant-numeric:tabular-nums;margin-top:2px;}
+  .seg.hit{outline:3px solid var(--gold);outline-offset:1px;}
+
+  /* table */
+  details{margin-top:6px;}
+  summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--ink-soft);
+    padding:8px 0;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+  th,td{border:1px solid var(--line);padding:5px 4px;text-align:center;
+    font-variant-numeric:tabular-nums;}
+  th{background:var(--paper);}
+  td.r{color:var(--red);font-weight:700;background:#fbeae6;}
+  td.k{color:var(--black-cat);background:#efece6;}
+  .foot{font-size:12px;color:var(--ink-soft);margin-top:18px;line-height:1.7;}
+  .foot b{color:var(--ink);}
+  /* 頁尾署名 — 套用自己來設計所 VIS */
+  .credit{margin-top:36px;padding-top:24px;border-top:2px solid #1d1a16;text-align:center;
+    --vis-ink:#1d1a16; --vis-ink-soft:#423d35; --vis-ochre:#d49a36;
+    font-family:"Taipei Sans TC Beta","台北黑體","Noto Sans TC",sans-serif;}
+  .credit .brand{font-size:clamp(18px,2.4vw,24px);font-weight:900;letter-spacing:.04em;
+    color:var(--vis-ink);font-feature-settings:"palt" 1;}
+  .credit .brand-en{font-family:"Oswald","Roboto Condensed",sans-serif;font-weight:600;
+    letter-spacing:.28em;font-size:12px;text-transform:uppercase;color:var(--vis-ochre);margin-top:5px;}
+  .credit .cline{font-size:13px;color:var(--vis-ink-soft);margin-top:10px;}
+  .credit .copy{font-family:"Oswald","Roboto Condensed",sans-serif;font-size:11px;
+    letter-spacing:.05em;color:var(--vis-ink-soft);opacity:.75;margin-top:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>文公尺 × 公分 對照工具</h1>
+    <p>以公分為核心,直接對紅字像對答案 — 輸入尺寸,馬上知道落在哪個字、紅還是黑。</p>
+  </header>
+
+  <div class="card">
+    <div class="input-row">
+      <label for="cm">輸入公分</label>
+      <input id="cm" type="number" inputmode="decimal" step="0.1" value="60">
+      <span class="unit">cm</span>
+    </div>
+    <div class="quick" id="quick"></div>
+
+    <div id="verdict" class="verdict good"></div>
+    <div class="sugg" id="sugg"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="sec">一個循環的八字落點(每 42.9cm 重複)</h2>
+    <div class="legend"><b class="r">■ 紅字(吉)</b> 財・義・官・本　　<b class="k">■ 黑字(凶)</b> 病・離・劫・害　　<span style="color:var(--gold);">▣</span> 你的尺寸落點</div>
+    <div class="strip" id="strip"></div>
+
+    <details>
+      <summary>展開 1–1000cm 完整對照表</summary>
+      <table id="bigtable"></table>
+    </details>
+  </div>
+
+  <div class="foot">
+    <b>怎麼用：</b>量到的公分數丟進去,顯示<b style="color:var(--red)">紅字</b>就是吉、黑字就是凶；若是黑字,下方會列出最近的紅字區間,把尺寸往那邊微調即可。<br>
+    <b>提醒：</b>紅字不是都一樣 — <b>財</b>系適合一般住家/商業(財運順暢)、<b>官</b>系偏公家行政、<b>義</b>系利添丁子嗣、<b>本</b>系主家運根基。重點仍要先顧動線與人體工學,風水尺寸是加分項。<br>
+    本工具採文公尺(陽宅)標準:一循環 42.9cm,八字均分,每字四細字。實體魯班尺各廠牌刻度可能有微小位移,正式以手上的尺再核對一次。
+  </div>
+
+  <footer class="credit">
+    <div class="brand">自己來設計所 · interior DIY</div>
+    <div class="brand-en">Design It Yourself</div>
+    <div class="cline">由「自己來設計所 interior DIY」社群製作 · 與屋主一起,親手做出自己想住的家</div>
+    <div class="copy">© 2026 自己來設計所 interior DIY. 本工具免費提供社群學習使用,轉載請註明出處。</div>
+  </footer>
+</div>
+
+<script>
+const CYCLE = 42.9;
+const SEG = CYCLE/32;        // 每細字寬
+const GROUPW = CYCLE/8;      // 每字寬
+// 八字:名稱、吉(true)/凶、四細字、四細字涵義
+const GROUPS = [
+  {c:"財", good:true,  subs:["財德","寶庫","六合","迎福"], mean:["財運道德兼備","招財納庫","和氣生財","迎接福氣"]},
+  {c:"病", good:false, subs:["退財","公事","牢執","孤寡"], mean:["破財損財","官司纏身","牢獄之災","孤獨寡居"]},
+  {c:"離", good:false, subs:["長庫","劫財","官鬼","失脫"], mean:["聚而易散","遭劫破財","官非小人","遺失走脫"]},
+  {c:"義", good:true,  subs:["添丁","益利","貴子","大吉"], mean:["添丁進口","利益進財","貴子興家","大吉大利"]},
+  {c:"官", good:true,  subs:["順科","橫財","進益","富貴"], mean:["考運順遂","意外之財","進財得利","榮華富貴"]},
+  {c:"劫", good:false, subs:["死別","退口","離鄉","財失"], mean:["生死離別","損及人口","背井離鄉","損失錢財"]},
+  {c:"害", good:false, subs:["災至","死絕","病臨","口舌"], mean:["災禍降臨","死亡絕嗣","疾病臨身","口舌是非"]},
+  {c:"本", good:true,  subs:["財至","登科","進寶","興旺"], mean:["財運到來","金榜題名","招財進寶","家運興旺"]},
+];
+
+function lookup(cm){
+  let p = ((cm % CYCLE) + CYCLE) % CYCLE;
+  let idx = Math.floor(p / SEG);
+  if(idx>31) idx=31;
+  let g = Math.floor(idx/4), s = idx%4;
+  const G = GROUPS[g];
+  return {group:G.c, good:G.good, sub:G.subs[s], mean:G.mean[s], gi:g};
+}
+
+// 計算實數線上「紅字」連續區間(掃描兩個循環,給最近建議用)
+function redIntervals(lo, hi){
+  const out=[]; let cur=null;
+  for(let x=Math.floor(lo*10)/10; x<=hi; x+=0.1){
+    x=Math.round(x*10)/10;
+    if(lookup(x).good){ if(!cur)cur={a:x,b:x}; else cur.b=x; }
+    else { if(cur){out.push(cur);cur=null;} }
+  }
+  if(cur)out.push(cur);
+  return out;
+}
+
+function fmt(n){ return (Math.round(n*10)/10).toFixed(1); }
+
+function render(){
+  const cm = parseFloat(document.getElementById('cm').value);
+  const V = document.getElementById('verdict');
+  const S = document.getElementById('sugg');
+  if(isNaN(cm)){ V.className='verdict bad'; V.innerHTML='<div class="vtext">請輸入數字</div>'; S.innerHTML=''; return; }
+  const r = lookup(cm);
+
+  V.className = 'verdict ' + (r.good?'good':'bad');
+  V.innerHTML = `
+    <div class="big-char">${r.group}</div>
+    <div class="vtext">
+      <span class="vtag">${r.good?'紅字 · 吉':'黑字 · 凶'}</span>
+      <div class="vsub">${r.sub}</div>
+      <div class="vmean">${r.mean}　·　落在循環內第 ${fmt(((cm%CYCLE)+CYCLE)%CYCLE)} cm</div>
+    </div>`;
+
+  // 建議:列出附近(±一個循環半)的紅字區間
+  const ints = redIntervals(Math.max(0,cm-CYCLE), cm+CYCLE);
+  if(r.good){
+    S.innerHTML = `<h3>✓ 已落在紅字吉數,可放心使用</h3>` + pills(ints, cm);
+  }else{
+    S.innerHTML = `<h3>最近的紅字吉數區間(往這邊微調)</h3>` + pills(ints, cm);
+  }
+}
+
+function pills(ints, cm){
+  // 找最近的兩三個區間
+  ints.sort((p,q)=>Math.abs(midDist(p,cm))-Math.abs(midDist(q,cm)));
+  return ints.slice(0,3).sort((p,q)=>p.a-q.a).map(I=>{
+    const g = lookup((I.a+I.b)/2).group;
+    return `<span class="pill"><span class="rng">${fmt(I.a)}–${fmt(I.b)}</span><span class="nm">cm「${g}」</span></span>`;
+  }).join('');
+}
+function midDist(I,cm){ if(cm<I.a)return I.a-cm; if(cm>I.b)return cm-I.b; return 0; }
+
+// 八字 strip
+function buildStrip(){
+  const el = document.getElementById('strip');
+  el.innerHTML = GROUPS.map((G,i)=>{
+    const a=fmt(i*GROUPW), b=fmt((i+1)*GROUPW);
+    return `<div class="seg ${G.good?'r':'k'}" data-gi="${i}">
+      <div class="c">${G.c}</div><div class="n">${a}<br>~${b}</div></div>`;
+  }).join('');
+}
+function highlightStrip(){
+  const cm=parseFloat(document.getElementById('cm').value);
+  document.querySelectorAll('.seg').forEach(s=>s.classList.remove('hit'));
+  if(isNaN(cm))return;
+  const gi=lookup(cm).gi;
+  const t=document.querySelector(`.seg[data-gi="${gi}"]`); if(t)t.classList.add('hit');
+}
+
+// 1-1000 表(5 欄 × 200 列)
+function buildTable(){
+  const MAX=1000, COLS=5, rows=Math.ceil(MAX/COLS);
+  let head='<tr>';
+  for(let c=0;c<COLS;c++) head+='<th>cm</th><th>字</th><th>細字</th>';
+  head+='</tr>';
+  let h=head;
+  for(let i=1;i<=rows;i++){
+    h+='<tr>';
+    for(let col=0;col<COLS;col++){
+      const cm=i+col*rows;
+      if(cm<=MAX){const r=lookup(cm);const cls=r.good?'r':'k';
+        h+=`<td>${cm}</td><td class="${cls}">${r.group}</td><td class="${cls}">${r.sub}</td>`;
+      } else h+='<td></td><td></td><td></td>';
+    }
+    h+='</tr>';
+  }
+  document.getElementById('bigtable').innerHTML=h;
+}
+
+// 常用尺寸快捷
+const QUICK=[60,70,75,80,90,106,120,150,180,210,240];
+document.getElementById('quick').innerHTML =
+  QUICK.map(v=>`<button data-v="${v}">${v}</button>`).join('');
+document.getElementById('quick').addEventListener('click',e=>{
+  if(e.target.dataset.v){document.getElementById('cm').value=e.target.dataset.v;update();}
+});
+
+function update(){ render(); highlightStrip(); }
+document.getElementById('cm').addEventListener('input',update);
+buildStrip(); buildTable(); update();
+</script>
+</body>
+</html>
